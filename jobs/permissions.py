@@ -1,8 +1,22 @@
-from rest_framework.permissions import BasePermission
+from rest_framework import permissions
 
-class IsEmployer(BasePermission):
+class IsAdminOrCompanyOwner(permissions.BasePermission):
     """
-    Permite acceso solo a usuarios con rol employer.
+    Admin: todo.
+    Company: solo aplicaciones de sus trabajos.
+    User: solo sus aplicaciones (ya se maneja en get_queryset).
     """
-    def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.role == "employer"
+
+    def has_object_permission(self, request, view, obj):
+        user = request.user
+
+        if user.role == "ADMIN":
+            return True
+
+        if user.role == "COMPANY":
+            return obj.job.company.id == user.company.id  # si usas FK empresa → usuario
+
+        if user.role == "USER":
+            return obj.user == user
+
+        return False
