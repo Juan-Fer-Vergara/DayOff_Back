@@ -30,12 +30,11 @@ class Company(models.Model):
 #  JOB MODEL
 # -----------------------------
 class Job(models.Model):
-    title = models.CharField(max_length=150)
-    description = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="jobs")
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="jobs")
+    description = models.TextField()
     salary = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     location = models.CharField(max_length=200, blank=True, null=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="jobs")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
